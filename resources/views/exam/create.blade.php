@@ -22,6 +22,16 @@
 
                 {{ bs()->closeForm() }}
 
+                @if (count($errors) > 0)
+                @component('bs::alert', ['type' => 'danger'])
+                        <ul>
+                        @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                        @endforeach
+                        </ul>
+                @endcomponent
+                @endif
+
         @else
                 @component('bs::alert', ['type' => 'danger'])
                 @slot('heading')
