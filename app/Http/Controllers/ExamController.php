@@ -15,7 +15,11 @@ class ExamController extends Controller
      */
     public function index()
     {
-        return view('welcome');
+        //return view('exam.index');
+
+        $exams = Exam::where('enable', 1)->orderBy('created_at', 'desc')->paginate(3);
+        return view('exam.index', compact('exams'));
+
     }
 
     /**
