@@ -1,10 +1,26 @@
 @extends('layouts.app') 
 @section('content')
 
-<h1 class="text-center">{{$exam->title}}</h1>
+<h1 class="text-center">
+    {{$exam->title}}
+    @can('建立測驗')
+         <a href="{{route('exam.edit', $exam->id)}}" class="btn btn-warning">編輯</a>
+         <form action="{{route('exam.destroy', $exam->id)}}" method="POST" style="display:inline">
+                @csrf
+                @method('delete')
+                <button type="submit"  class="btn btn-danger">刪除</button>
+        </form>
+    @endcan
+</h1>
 
 @can('建立測驗')
+
+    @if(isset($topic))
+    {{ bs()->openForm('patch', "/topic/{$topic->id}", [ 'model' => $topic ]) }}
+    @else
     {{ bs()->openForm('post', '/topic') }}
+    @endif
+
         {{ bs()->formGroup()
                 ->label('題目內容', false, 'text-sm-right')
                 ->control(bs()->textarea('topic')->placeholder('請輸入題目內容'))
@@ -37,11 +53,20 @@
     {{ bs()->closeForm() }}
 @endcan
 
+@if(Auth::id())
 <dl>
     @forelse ($exam->topics as $key => $topic)
         <dt>
             <h3>
             @can('建立測驗')
+
+                <form action="{{route('topic.destroy', $topic->id)}}"  method="post" style="display:inline">
+                        @csrf
+                        @method('delete')
+                        <button type="submit" class="btn btn-danger">刪除</button>
+                </form>
+
+                <a href="{{route('topic.edit', $topic->id)}}" class="btn btn-warning">編輯</a>
                 （{{$topic->ans}}）
             @endcan
             {{ bs()->badge()->text($key+1) }}
@@ -60,6 +85,7 @@
         <div class="alert alert-danger">尚無任何題目</div>
     @endforelse
 </dl>
+@endif
 
 <div class="text-center">
     發佈於 {{$exam->created_at->format("Y年m月d日 H:i:s")}} / 最後更新： {{$exam->updated_at->format("Y年m月d日 H:i:s")}}

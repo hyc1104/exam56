@@ -10,6 +10,9 @@
             <li class="list-group-item">
                 
                 {{ $exam -> updated_at -> format("Y年m月d日") }}
+                @if($exam->enable!=1)
+                    {{ bs()->badge()->text('關閉') }}
+                @endif
                 <a href="/exam/{{ $exam -> id }}">{{ $exam -> title }}</a>
             
             </li>
